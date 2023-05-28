@@ -1,0 +1,178 @@
+// Estilos personalizados
+.rule-card {
+  background-color: #243B55;
+  color: #fff;
+}
+
+.fact-card {
+  background-color: #1A2B41;
+  color: #fff;
+}
+
+li {
+  &:hover {
+    background-color: #1A2B41;
+    color: #fff;
+    cursor: pointer;
+  }
+}
+
+input[type="text"] {
+  &:focus {
+    border: 2px solid #0B78C9;
+  }
+}
+
+input[id="password"] {
+  &:focus {
+    border: 2px solid #0B78C9;
+  }
+}
+
+button[type="submit"] {
+  background-color: #0B78C9;
+  &:hover {
+    background-color: #094667;
+  }
+}
+
+// Código SCSS existente
+$primary-color: #091d2b;
+$secondary-color: #103452;
+$tertiary-color: #eef8fb;
+
+body {
+  margin: 0;
+  color: $tertiary-color;
+  font-family: "Fira Code Regular" !important;
+}
+
+.container{
+  background-color: #0b2934;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.container-cards {
+  width: 85%;
+  background-color: #0b2934;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+
+.rule-card {
+  background-color: $secondary-color;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px 30px;
+  padding-top: 15px;
+  padding-bottom: 35px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  width: calc(50% - 5px);
+  float: right;
+}
+
+.fact-card {
+  background-color: $secondary-color;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px 30px;
+  padding-top: 15px;
+  padding-bottom: 35px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 10px;
+  width: calc(50% - 5px);
+  float: left;
+}
+
+h1 {
+  text-align: center;
+  font-size: 24px;
+  margin-bottom: 10px;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+li {
+  border-radius: 2px;
+  background-color: #093152;
+  margin: 20px 0px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+  padding: 10px;
+  font-size: 16px;
+  margin-bottom: 5px;
+}
+
+form {
+  display: flex;
+  margin-top: 20px;
+
+  input[type="text"] {
+    border: 1px solid #35596c !important;
+    border-radius: 5px !important;
+    background-color: #0b2934;
+    color: white;
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+  }
+
+  input[type="password"] {
+    border: 1px solid #35596c !important;
+    border-radius: 5px !important;
+    background-color: #0b2934;
+    color: white;
+    flex: 1;
+    padding: 10px;
+    font-size: 16px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+  }
+
+  button[type="submit"] {
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+  
+  button[type="submit"]:disabled {
+    background-color: $tertiary-color;
+    cursor: not-allowed;
+    
+  }
+
+  .large-button {
+    background-color: $primary-color;
+    color: white;
+    border: none;
+    width: 200x;
+    border-radius: 5px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+  
+    &:hover {
+      background-color: darken($primary-color, 10%);
+    }
+  }
+}
