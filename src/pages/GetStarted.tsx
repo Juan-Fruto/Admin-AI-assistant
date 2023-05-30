@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { createUser } from '../api/auth.api';
 import { useNavigate } from "react-router-dom";
+import { useAuthStore } from '../store/auth';
 
 type FormData = {
   brandName: string;
@@ -25,6 +26,9 @@ const GetStarted: React.FC = () => {
   });
 
   const navigate = useNavigate();
+
+  const setToken = useAuthStore((state) => state.setInitToken);
+  
 
   const handleBrandNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData({ ...formData, brandName: e.target.value });
@@ -75,7 +79,10 @@ const GetStarted: React.FC = () => {
       
       const {status} = resSingup
       if(status == 200){
+        const {token} = resSingup.data;
+        console.log(token);
         console.log("success", status);
+        setToken(token);
         navigate('/login');
       } else {
         console.log(status);

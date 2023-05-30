@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 type Res = {
-  data: {token: string},
+  data: {token?: string},
   status: number,
   statusText: string,
   headers: object,

@@ -1,23 +1,28 @@
 import React from 'react';
 import {BrowserRouter, Routes, Route} from 'react-router-dom';
 import { ProtectedRoutes } from './components/protectedRoutes';
-import { useAuthStore, useAuthReadyStore } from './store/auth';
+import { useAuthStore } from './store/auth';
 import Admin from './pages/Admin';
 import Login from './pages/Login';
+import GetStarted from './pages/GetStarted';
 
 function App() {
 
   const isAuth = useAuthStore((state) => state.isAuth);
-  const areUsers = useAuthReadyStore((state) => state.isAuth);
+  const areUsers = useAuthStore((state) => state.areUsers);
+  //console.log(useAuthStore());
 
   return (
     <div>
       <BrowserRouter>
         <Routes>
-          <Route path='/login' element={<Login/>}/>
-          <Route element={<ProtectedRoutes isAllowed={isAuth} redirect='/login'/>}>
-            <Route path='/' element={<Admin/>}/>
-            <Route path='/profile' element={<h1>profile</h1>}/>
+          <Route path='/getstarted' element={<GetStarted/>}/>
+          <Route element={<ProtectedRoutes isAllowed={areUsers} redirect='/getstarted'/>}>
+            <Route path='/login' element={<Login/>}/>
+            <Route element={<ProtectedRoutes isAllowed={isAuth} redirect='/login'/>}>
+              <Route path='/' element={<Admin/>}/>
+              <Route path='/profile' element={<h1>profile</h1>}/>
+            </Route>
           </Route>
         </Routes>
       </BrowserRouter>

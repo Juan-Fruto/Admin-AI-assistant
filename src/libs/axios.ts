@@ -9,7 +9,8 @@ const authApi = axios.create({
 // adding the token in the header
 authApi.interceptors.request.use((config) => {
   config.headers = {
-    Authorization: `Bearer ${useAuthStore.getState().token}`
+    Authorization: `Bearer ${useAuthStore.getState().authToken}`,
+    'X-Init-Token' : `Bearer ${useAuthStore.getState().initToken}`
   }
 
   return config;

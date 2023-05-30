@@ -1,6 +1,4 @@
-import axios from 'axios';
 import React, { useState, useEffect } from 'react';
-import GetStarted from './GetStarted';
 import { setup } from '../api/auth.api'; 
 import {
   getRules,
@@ -96,9 +94,9 @@ function Admin() {
     //validateSetup().then(() => fetchData());
   }, []);
 
-  if(renderSetup === true){
-    return (<GetStarted/>)
-  }
+  // if(renderSetup === true){
+  //   return (<GetStarted/>)
+  // }
 
   return (
     <div className="container">

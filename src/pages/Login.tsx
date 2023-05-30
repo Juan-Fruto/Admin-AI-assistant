@@ -4,7 +4,7 @@ import { useAuthStore } from '../store/auth';
 import { useNavigate } from "react-router-dom";
 
 function Login() {
-  const setToken = useAuthStore((state) => state.setToken);
+  const setToken = useAuthStore((state) => state.setAuthToken);
   const navigate = useNavigate();
 
   const handleSubmint = async (e: React.FormEvent<HTMLFormElement>) => {

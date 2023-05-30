@@ -3,52 +3,66 @@ import { persist } from 'zustand/middleware';
 
 // state content
 type State = {
-  token: string,
+  authToken: string,
+  initToken: string,
+  areUsers: boolean
   isAuth: boolean
 }
 
 // actions aviable to modify the state
 type Actions = {
-  setToken: (token: string) => void, 
-  logout: () => void, 
+  setAuthToken: (token: string) => void, 
+  setInitToken: (token: string) => void, 
+  logout: () => void,
+  reset: () => void 
 }
 
 // global state for the token on the local storage
 export const useAuthStore = create(persist<State & Actions>(
   (set) => ({
-    token: "",
+    authToken: "",
+    initToken: "",
+    areUsers: false,
     isAuth: false,
-    setToken: (token: string) => set((state) => (
+    setAuthToken: (authToken: string) => set((state) => (
       {
-        token,
+        authToken,
         isAuth: true
+      }
+    )),
+    setInitToken: (initToken: string) => set((state) => (
+      {
+        initToken,
+        areUsers: true
       }
     )),
     logout: () => set((state) => ( 
       {
-        token: '',
+        authToken: '',
+        isAuth: false
+      }
+    )),
+    reset: () => set((state) => ( 
+      {
+        initToken: '',
+        authToken: '',
+        areUsers: false,
         isAuth: false
       }
     ))
   }), {name: "auth"}
 ));
 
-// global state for the token on the local storage
-export const useAuthReadyStore = create(persist<State & Actions>(
-  (set) => ({
-    token: "",
-    isAuth: false,
-    setToken: (token: string) => set((state) => (
-      {
-        token,
-        isAuth: true
-      }
-    )),
-    logout: () => set((state) => ( 
-      {
-        token: '',
-        isAuth: false
-      }
-    ))
-  }), {name: "auth"}
-));
+// // global state for the token on the local storage
+// export const useAuthInitStore = create(persist<State & Actions>(
+//   (set) => ({
+//     token: "123",
+//     isAuth: true,
+//     setToken: (token: string) => set((state) => (
+//       {
+//         token,
+//         isAuth: true
+//       }
+//     )),
+//   }), {name: "initStore"}
+// ));
