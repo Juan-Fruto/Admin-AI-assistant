@@ -13,6 +13,7 @@ type FormGetStarted = {
   brandName: string;
   legalName: string;
   logo: File | null;
+  devicesState: string;
   username: string;
   name: string;
   email: string;

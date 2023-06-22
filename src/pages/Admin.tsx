@@ -3,19 +3,22 @@ import { setup } from '../api/auth.api';
 import {
   getRules,
   addRule,
-  getFacts,
-  addFact
+  deleteRule,
+  getDevices,
+  deleteDevice
 } from '../api/knowledge.api';
 import { useNavigate } from 'react-router-dom';
 import { useAuthStore } from '../store/auth';
+import Swal from 'sweetalert2';
+import sleep from '../utils/sleeper';
 
 function Admin() {
 
   const [renderSetup, setRenderSetup] = useState<Promise<boolean>>();
   const [rules, setRules] = useState<string[]>([]);
-  const [facts, setFacts] = useState<string[]>([]);
+  const [devices, setDevices] = useState<string[]>([]);
   const [newRule, setNewRule] = useState<string>('');
-  const [newFact, setNewFact] = useState<string>('');
+  const [searchDevice, setSearchDevice] = useState<string>('');
 
   const navigate = useNavigate();
   const logout = useAuthStore((state) => state.logout); 
@@ -33,101 +36,119 @@ function Admin() {
   };
 
   // Función para enviar el nuevo hecho al servidor
-  const handleSubmitaddFact = () => {
-    addFact(newFact)
-      .then(response => {
-        setFacts([...facts, response.data]);
-        setNewFact('');
-      })
-      .catch(error => {
-      console.log(error);
-      });
+  const handleSearchDevice = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const username =  (e.currentTarget.elements[0] as HTMLInputElement).value
+    navigate(`/devices?search=${searchDevice}`);
   };
 
   // Función para recuperar los datos existentes de la base de datos
-  const fetchData = () => {
-    getRules()
-      .then(response => {
-        setRules(response.data.rules);
-      })
-      .catch(error => {
-        console.log(error);
-      });
+const fetchData = async () => {
+  try {
+    const rulesResponse = await getRules();
+    setRules(rulesResponse.data.rules);
 
-    getFacts()
-      .then(response => {
-          setFacts(response.data.facts);
-      })
-      .catch(error => {
-          console.log(error);
-      });
-  };
+    const devicesResponse = await getDevices();
+    // change the any type
+    const devicesDB = (devicesResponse.data.devices).map((d: any) => {
+      const price = d.price
 
-  const validateSetup = async () => {
-    try {
-      const {status} = await setup();
+      if(price % 100 == 0) return {id: d.id, name: d.name, price:`$${(d.price)/100}.00`}
       
-      //if(status == 100) return false;
+      return {id: d.id, name: d.name, price:`$${(d.price)/100}`}
+      // if(price % 100 == 0) return `${d.name} $${(d.price)/100}.00`
       
-      if(status == 204){
-        console.log(true);
-        return true;
-      }
-      
-      console.log(false);
-      return false;
+      // return `${d.name} $${(d.price)/100}`
+    });
 
-      
+    setDevices(devicesDB); 
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+const handleDeleteClick = async (id: string, model: string, deleteFunc: (id: string) => Promise<void>) => {
+  Swal.fire({
+    title: `Are you sure to delete ${model}?`,
+    text: "You won't be able to revert this!",
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#091d2b',
+    cancelButtonColor: '#d33',
+    confirmButtonText: 'Yes, delete it!'
+  }).then(async (result) => {
+    if (result.isConfirmed) {
+      try {
+        await deleteFunc(id);
+        Swal.fire(
+          'Deleted!',
+          'Your file has been deleted.',
+          'success'
+        );
+        await sleep(2000);
+        window.location.reload();
       } catch (error) {
-        console.error(error);
-        throw error;
+        console.log(error);
+        Swal.fire(
+          'Error!',
+          'An error occurred while deleting the item.',
+          'error'
+        );
       }
-    };
+    }
+  });
+};
+
+ 
   // Utiliza useEffect para cargar los datos existentes al cargar la página
   useEffect(() => {
-    validateSetup()
-      .then((result) => {
-        setRenderSetup(result)
-      })
-        .then(() => fetchData());
-      
-    //validateSetup().then(() => fetchData());
+    fetchData();
   }, []);
-
-  // if(renderSetup === true){
-  //   return (<GetStarted/>)
-  // }
 
   return (
     <div className="container">
       <div className="container-cards">
-        {/* <h1 className='tittle'>Admin dashboard brand name</h1> */}
+
         <div className="rule-card">
-          <h1>Rules</h1>
+          <h1>Devices</h1>
           <ul>
-            {rules.map((rule, index) => (
-              <li key={index}>{rule}</li>
+            {devices.map((device, index) => (
+              <li key={index}>
+                {device.name + " " + device.price}
+                <button className='buttom-search-device' onClick={() => 
+                  handleDeleteClick(device.id, device.name, deleteDevice)}>
+                  <i className="fi fi-rs-trash"/>
+                </button>
+              </li>
             ))}
           </ul>
-          <form onSubmit={handleSubmitRule}>
-            <input type="text" value={newRule} onChange={(e) => setNewRule(e.target.value)} />
-            <button type="submit">AGREGAR</button>
+          <form onSubmit={handleSearchDevice}>
+            <input type="text" value={searchDevice} onChange={(e) => setSearchDevice(e.target.value)} />
+            <button type="submit">SEARCH AND ADD</button>
           </form>
         </div>
     
         <div className="fact-card">
-          <h1>Facts</h1>
+          <h1>Rules</h1>
           <ul>
-            {facts.map((fact, index) => (
-              <li key={index}>{fact}</li>
+            {rules.map((rule, index) => (
+              <li key={index}>
+                <p className='rule-content'>{rule.content}</p>
+                <button className='buttom-search-device' onClick={() => 
+                  handleDeleteClick(rule._id, "this rule", deleteRule)}>
+                  <i className="fi fi-rs-trash"/>
+                </button>
+              </li>
             ))}
           </ul>
-          <form onSubmit={handleSubmitaddFact}>
-            <input type="text" value={newFact} onChange={(e) => setNewFact(e.target.value)} />
-            <button type="submit">AGREGAR</button>
+          <form onSubmit={handleSubmitRule}>
+            <input type="text" value={newRule} onChange={(e) => setNewRule(e.target.value)} />
+            <button type="submit">ADD</button>
           </form>
         </div>
       </div>
+
       <button onClick={() => {
         logout();
         navigate('/login');
